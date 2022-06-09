@@ -45,12 +45,12 @@ def on_forever():
     obstacle_distance = sonar.ping(pin_Trig, pin_Echo, PingUnit.CENTIMETERS, 100)
     l = pins.digital_read_pin(DigitalPin.P13)
     r = pins.digital_read_pin(DigitalPin.P14)  
-    if r == 1 and l == 0:
-        motor_run(0, 70, -80)            
-    elif r == 0 and l == 1:
-        motor_run(50, 0, -80)           
+    if l == 1 and r == 0:
+        motor_run(0, 80, -80)            
+    elif l == 0 and r == 1:
+        motor_run(-70, 0, -80)           
     else:
-        motor_run(50, 70, -80)   
-    #basic.pause(50) #reakční frekvence 20 Hz
+        motor_run(-70, 80, -80)   
+    basic.pause(50) #reakční frekvence 20 Hz
     print(l +" "+ r)
 basic.forever(on_forever)
