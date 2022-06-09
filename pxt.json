@@ -20,9 +20,7 @@
         ".vscode/tasks.json",
         "main.blocks",
         "main.ts",
-        "main.py",
-        ".simstate.json",
-        ".git.json"
+        "main.py"
     ],
     "testFiles": [
         "test.ts"
