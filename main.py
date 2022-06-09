@@ -49,11 +49,11 @@ def on_forever():
     l = False if (whiteline ^ pins.digital_read_pin(pin_L)) == 0 else True
     r = False if (whiteline ^ pins.digital_read_pin(pin_R)) == 0 else True
 
-    if l == True and r == False:
+    if l == False and r == True:
             PCAmotor.motor_run(PCAmotor.Motors.M2, -speedFactor)
             PCAmotor.motor_run(PCAmotor.Motors.M1, -0)
             
-    elif l == False and r == True:
+    elif l == True and r == False:
             PCAmotor.motor_run(PCAmotor.Motors.M2, 0)
             PCAmotor.motor_run(PCAmotor.Motors.M1, -speedFactor)
             
