@@ -1,18 +1,16 @@
-
-speedFactor = 100
-pin_L = DigitalPin.P13
-pin_R = DigitalPin.P14
+speedFactor = 80
+l = DigitalPin.P13
+r = DigitalPin.P14
 pin_Trig = DigitalPin.P8
 pin_Echo = DigitalPin.P15
 whiteline = 1
 connected = 0
 strip = neopixel.create(DigitalPin.P16, 4, NeoPixelMode.RGB)
-pins.set_pull(pin_L, PinPullMode.PULL_NONE)
-pins.set_pull(pin_R, PinPullMode.PULL_NONE)
+pins.set_pull(l, PinPullMode.PULL_NONE)
+pins.set_pull(r, PinPullMode.PULL_NONE)
 bluetooth.start_uart_service()
 basic.show_string("S")
-l = None
-r = None
+
 # temporary code
 """motor_run(100, 100); basic.pause(2000)
 motor_run(); basic.pause(300)
@@ -25,7 +23,7 @@ strip.show()
 """
 def motor_run(left = 0, right = 0, speed_factor = 80):
     PCAmotor.motor_run(PCAmotor.Motors.M1, Math.map(Math.constrain(left * (speedFactor / 100), -100, 100), -100, 100, -255, 255))
-    PCAmotor.motor_run(PCAmotor.Motors.M4, Math.map(Math.constrain(-1 * right * (speedFactor / 100), -100, 100), -100, 100, -255, 255))
+    PCAmotor.motor_run(PCAmotor.Motors.M2, Math.map(Math.constrain(-1 * right * (speedFactor / 100), -100, 100), -100, 100, -255, 255))
 
 def on_bluetooth_connected():
     global connected
@@ -45,22 +43,14 @@ bluetooth.on_bluetooth_disconnected(on_bluetooth_disconnected)
 def on_forever():
     global l, r
     obstacle_distance = sonar.ping(pin_Trig, pin_Echo, PingUnit.CENTIMETERS, 100)
-
-    l = False if (whiteline ^ pins.digital_read_pin(pin_L)) == 0 else True
-    r = False if (whiteline ^ pins.digital_read_pin(pin_R)) == 0 else True
-
-    if l == False and r == True:
-            PCAmotor.motor_run(PCAmotor.Motors.M2, -speedFactor)
-            PCAmotor.motor_run(PCAmotor.Motors.M1, -0)
-            
-    elif l == True and r == False:
-            PCAmotor.motor_run(PCAmotor.Motors.M2, 0)
-            PCAmotor.motor_run(PCAmotor.Motors.M1, -speedFactor)
-            
+    l = pins.digital_read_pin(DigitalPin.P13)
+    r = pins.digital_read_pin(DigitalPin.P14)  
+    if r == 1 and l == 0:
+        motor_run(0, 70, -80)            
+    elif r == 0 and l == 1:
+        motor_run(50, 0, -80)           
     else:
-            PCAmotor.motor_run(PCAmotor.Motors.M1, -speedFactor)
-            PCAmotor.motor_run(PCAmotor.Motors.M2, -speedFactor)
-           
-
-    basic.pause(50) #reakční frekvence 20 Hz
+        motor_run(50, 70, -80)   
+    #basic.pause(50) #reakční frekvence 20 Hz
+    print(l +" "+ r)
 basic.forever(on_forever)
